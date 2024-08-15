@@ -2,6 +2,7 @@ package svg;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import logic.Strings;
 import main.Main;
@@ -21,6 +22,14 @@ public class SvgElement {
 	 */
 	public SvgElement(String tag) {
 		this.tag = tag;
+	}
+	/** 
+	 * Made for easy using <code>ArrayList.contains()</code>
+	 * @author hortiSquash
+	 **/
+	@Override
+	public boolean equals(Object other) {
+		return (Objects.equals(String.valueOf(this), String.valueOf(other)));
 	}
 	
 	private HashMap<String, String> attributes = new HashMap<>(); // attributes of element

@@ -25,6 +25,13 @@ public class Colors {
 				 (rgba >> 8) & 0xFF, 
 				 (rgba) & 0xFF);
 	}
+	/** 
+	 * Change alpha in rgba to max
+	 * @author hortiSquash
+	 **/
+	public static int RGBAtoRGB(int rgba) {
+		return (rgba | 0xFF);
+	}
 
 	/**
 	 * @param r - red [0-255]
@@ -38,7 +45,7 @@ public class Colors {
 	 * </code>
 	 */
 	public static String toHex(Color color) {
-		return toHex(color.getRed(), color.getGreen(), color.getBlue());
+		return toHex(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 	}
 
 	/**
@@ -80,7 +87,16 @@ public class Colors {
 	 * </code>
 	 */
 	public static String toHex(int r, int g, int b, int a) {
-		if(a == 255) return toHex(r, g, b);
+		//if(a == 255) return toHex(r, g, b);
+		if(a == 255) return String.format("#%02x%02x%02x", r, g, b);
 		return String.format("#%02x%02x%02x%02x", r, g, b, a);
+	}
+
+	/** 
+	 * @return alpha from rgba integer
+	 * @author hortiSquash
+	 **/
+	public static int alpha(int rgba) {
+		return (rgba) & 0xFF;
 	}
 }

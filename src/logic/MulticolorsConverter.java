@@ -100,7 +100,7 @@ public class MulticolorsConverter {
 		h -= 2;
 
 		SvgElement svg = new SvgElement("svg")
-				.attribute("version", "1.1")
+				.attribute("version", "2.0")
 				.attribute("xmlns", "http://www.w3.org/2000/svg")
 				.attribute("xmlns:xlink", "http://www.w3.org/1999/xlink")
 				.attribute("viewBox", "0 0 @ @", w*2*Main.scale, h*2*Main.scale);
@@ -150,7 +150,7 @@ public class MulticolorsConverter {
 					.attribute("height", h*2*Main.scale)
 //					.attribute("x", (0)*Main.scale)
 //					.attribute("y", (0)*Main.scale)
-					.attribute("opacity", ".5")
+//					.attribute("opacity", ".5")
 					.attribute("style", "image-rendering:pixelated");
 
 			if(Main.inkscapeMode) {
@@ -158,6 +158,7 @@ public class MulticolorsConverter {
 						.attribute("inkscape:groupmode", "layer")
 						.attribute("inkscape:label", "Source image")
 						.attribute("sodipodi:insensitive", true)
+						.attribute("display", "none")
 						.attribute("opacity", ".5");
 
 				layerSource.add(image);
@@ -175,8 +176,8 @@ public class MulticolorsConverter {
 						.attribute("showgrid", "true").add(new SvgElement("inkscape:grid")
 								.attribute("type", "xygrid")
 								.attribute("empspacing", 2)
-								.attribute("spacingy", 1)
-								.attribute("spacingx", 1)
+								.attribute("spacingy", Main.scale)
+								.attribute("spacingx", Main.scale)
 								));
 			} else {
 				SvgElement plain = new SvgElement("g")
@@ -219,5 +220,4 @@ public class MulticolorsConverter {
 		}
 		System.out.println(save + " " + w + "x" + h + " | " + bs.length + "bytes " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) + "ms");
 	}
-	
 }
