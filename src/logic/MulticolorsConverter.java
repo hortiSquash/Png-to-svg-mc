@@ -1,6 +1,5 @@
 package logic;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -10,14 +9,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
-import logic.MarchingSquares.VecPathArea;
-import main.Debug;
 import main.Main;
 import svg.SvgElement;
 
@@ -121,22 +117,6 @@ public class MulticolorsConverter {
 			}
 		}
 		
-		
-		Debug.image(w, h, 1);
-		tmp = 0;
-		colors.forEach((rgb, map) -> {
-			Debug.color(new Color(Color.HSBtoRGB(tmp/(float)colors.size(), .6f, 1f)));
-			for (int y = 0; y < map.length; y++) {
-				for (int x = 0; x < map[y].length; x++) {
-					if(map[x][y]) {
-						Debug.fillRect(x, y, 1, 1);
-					}
-				}
-			}
-			tmp++;
-		});
-		Debug.write("debug/" + save + "-areas.png");
-		
 		w -= 2;
 		h -= 2;
 
@@ -152,46 +132,31 @@ public class MulticolorsConverter {
 		}
 
 		if(colors.entrySet().size() > 150) {
-			System.err.println("To many colors, skipping (" + colors.entrySet().size() + "/10)");
+			System.err.println("Too many colors, skipping (" + colors.entrySet().size() + "/150)");
 			return;
 		}
 
-		ArrayList<VecPathArea> paths = new ArrayList<MarchingSquares.VecPathArea>();
-		paths.addAll(new MulticolorsMarchingSquares(rgbs).create(save).getSvgPaths());
-		//.getSvgPaths();
+		ArrayList<SvgElement> paths = new ArrayList<SvgElement>();
+		paths.addAll(SvgConverter.getSvgPaths(new MulticolorsMarchingSquares(rgbs).create(save)));
 
-//		colors.entrySet().forEach(e -> {
-//			if((e.getKey() & 0xFF) == 0) return;
-//			
-//			paths.addAll(new MarchingSquares(e.getValue()).colorsMap(colorsMap).create(e.getKey(), save, new Color(e.getKey())).getSvgPaths(e.getKey()));
-//		});
-
-
-		paths.sort(new Comparator<VecPathArea>() {
-
-			@Override
-			public int compare(VecPathArea p1, VecPathArea p2) {
-				return p2.boundsArea() - p1.boundsArea();
-			}
-		});
 		if(Main.inkscapeMode) {
 			SvgElement layerPaths = new SvgElement("g")
 					.attribute("inkscape:groupmode", "layer")
 					.attribute("inkscape:label", "Paths");
-			for (VecPathArea p : paths) layerPaths.add(p.svg());
+			for (SvgElement p : paths) layerPaths.add(p);
 			svg.add(layerPaths);
 		} else {
-			for (VecPathArea p : paths) svg.add(p.svg());
+			for (SvgElement p : paths) svg.add(p);
 		}
 
 		if(Main.sourceImage) {
 			SvgElement image = new SvgElement("image")
-					.attribute("xlink:href", "data:image/png;base64," + Strings.toBase64(source))
+					.attribute("href", "data:image/png;base64," + Strings.toBase64(source))
 					.attribute("width", w*2*Main.scale)
 					.attribute("height", h*2*Main.scale)
 //					.attribute("x", (0)*Main.scale)
 //					.attribute("y", (0)*Main.scale)
-//					.attribute("opacity", ".5")
+					.attribute("opacity", ".5")
 					.attribute("style", "image-rendering:pixelated");
 
 			if(Main.inkscapeMode) {
@@ -213,6 +178,7 @@ public class MulticolorsConverter {
 			if(Main.inkscapeMode) {
 				svg.add(new SvgElement("sodipodi:namedview")
 						.attribute("inkscape:snap-global", true)
+						.attribute("inkscape:pagecheckerboard", true)
 						.attribute("units", "px")
 						.attribute("showgrid", "true").add(new SvgElement("inkscape:grid")
 								.attribute("type", "xygrid")

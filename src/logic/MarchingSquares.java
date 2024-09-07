@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import logic.Converter.VecPathAreaContainer;
 import main.Main;
 import svg.SvgElement;
 
@@ -171,8 +172,8 @@ public class MarchingSquares {
 
 	static int counter = 0;
 	
-	public ArrayList<VecPathArea> getSvgPaths(int rgb) {
-		ArrayList<VecPathArea> paths = new ArrayList<>();
+	public ArrayList<VecPathAreaContainer> getSvgPaths(int rgb) {
+		ArrayList<VecPathAreaContainer> paths = new ArrayList<>();
 		
 		String rgba = Colors.toHex(rgb);
 		
@@ -248,7 +249,7 @@ public class MarchingSquares {
 					.attribute("fill", rgba)
 					.attribute("d", d);
 			
-			paths.add(new VecPathArea(svg, minX, maxX, minY, maxY, w*h));
+			paths.add(new VecPathAreaContainer(svg, minX, maxX, minY, maxY, w*h));
 		}
 		
 		// Remove groups in groups
@@ -272,8 +273,6 @@ public class MarchingSquares {
 		return paths;
 		
 	}
-	
-	record VecPathArea(SvgElement svg, int minX, int maxX, int minY, int maxY, int boundsArea) {}
 	
 	boolean nullCheck = false;
 	
